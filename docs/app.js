@@ -1,4 +1,5 @@
 // Список товаров по категориям
+// ← Редактируйте здесь, чтобы изменить товары (добавляйте/удаляйте в списке)
 const products = {
   drinks: [
     "LitEnergy", "Адреналин", "Аскания", "Бёрн", "Вода", "Горилла",
@@ -31,7 +32,7 @@ function generateInputFields() {
   });
 }
 
-// Формирование ссылки для отправки отчета
+// Отправка отчета через Telegram Bot API
 function sendReport() {
   const cash = document.getElementById('cash').value;
   let reportText = "📊 Отчёт:\n\n";
@@ -53,10 +54,29 @@ function sendReport() {
   // Касса
   reportText += `\n💰 Касса: ${cash} руб`;
 
-  // Генерация ссылки для отправки
-  const telegramBotUsername = 'Arena_report_bot'; // ← Замените на имя вашего бота
+  // Получение данных из Telegram WebApp
+  const telegram = window.Telegram.WebApp;
+  const telegram_id = telegram.initDataUnsafe.user.id;
+
+  // ← Замените на ваш токен бота (указан ниже)
+  const botToken = '7912173425:AAHBeNkE-SawhZ1PvBqrKuqblUNwBezj8zs'; // ← Ваш токен
+
+  // Формирование URL для Telegram Bot API
   const encodedReport = encodeURIComponent(reportText);
-  window.open(`https://t.me/${telegramBotUsername}?text=${encodedReport}`, '_blank');
+  const telegramApiUrl = `https://api.telegram.org/bot ${botToken}/sendMessage?chat_id=${telegram_id}&text=${encodedReport}`;
+
+  // Отправка отчета через Telegram Bot API
+  fetch(telegramApiUrl)
+    .then(response => {
+      if (response.ok) {
+        console.log('Отчет успешно отправлен');
+      } else {
+        console.error('Ошибка отправки:', response.statusText);
+      }
+    })
+    .catch(error => {
+      console.error('Network error:', error);
+    });
 
   // Сохранение отчета в localStorage
   saveReportLocally();
