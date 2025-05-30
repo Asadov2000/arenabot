@@ -1,0 +1,241 @@
+/* Темная тема с мягким неоном */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #14151a;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 600px;
+  width: 100%;
+  margin: 2.5vw auto;
+  padding: 2rem 1rem;
+  background: rgba(24, 26, 32, 0.98);
+  border-radius: 20px;
+  box-shadow: 0 0 24px 2px #0ff4, 0 0 48px 0 #f0f2, 0 2px 16px rgba(0,0,0,0.7);
+  position: relative;
+  z-index: 1;
+  border: 1.5px solid rgba(0,255,255,0.08);
+}
+
+h1, h2 {
+  color: #fff;
+  text-shadow: 0 0 4px #0ffb, 0 0 8px #f0f8;
+}
+
+/* Поля ввода */
+.category {
+  margin-bottom: 2rem;
+  border-left: 3px solid #0ff8;
+  border-radius: 8px;
+  padding-left: 1rem;
+  position: relative;
+  background: rgba(30,32,40,0.7);
+  box-shadow: 0 0 8px #0ff2, 0 0 12px #f0f1;
+}
+
+.category:before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 12px;
+  width: 6px;
+  height: 80%;
+  background: linear-gradient(180deg, #0ff 0%, #f0f 100%);
+  border-radius: 8px;
+  filter: blur(3px);
+  opacity: 0.5;
+}
+
+.product {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.7rem;
+}
+
+.product label {
+  flex: 1 1 60%;
+  min-width: 120px;
+  color: #e0e0ff;
+  font-size: 1rem;
+}
+
+input[type="number"] {
+  flex: 0 1 100px;
+  min-width: 70px;
+  max-width: 120px;
+  width: 100%;
+  padding: 6px 10px;
+  border: 1.5px solid #0ff8;
+  border-radius: 8px;
+  font-size: 16px;
+  background: #23243a;
+  color: #fff;
+  box-shadow: 0 0 6px #0ff2;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+input[type="number"]:focus {
+  border: 1.5px solid #f0f8;
+  box-shadow: 0 0 8px #f0f6, 0 0 6px #0ff6;
+}
+
+/* Касса */
+.cash {
+  margin: 24px 0;
+  border-bottom: 1.5px solid #f0f6;
+  padding-bottom: 10px;
+}
+
+.cash label {
+  color: #fff;
+  font-size: 1.05rem;
+}
+
+.cash input {
+  width: 110px;
+}
+
+/* Кнопки */
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+  justify-content: stretch;
+}
+
+button {
+  flex: 1 1 180px;
+  min-width: 120px;
+  max-width: 100%;
+  background: linear-gradient(90deg, #0ff 0%, #f0f 100%);
+  color: #181a20;
+  border: none;
+  padding: 11px 22px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: bold;
+  box-shadow: 0 0 10px #0ff6, 0 0 16px #f0f4;
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+  text-shadow: 0 0 6px #fff6;
+}
+button:hover {
+  background: linear-gradient(90deg, #f0f 0%, #0ff 100%);
+  color: #fff;
+  box-shadow: 0 0 18px #f0f6, 0 0 18px #0ff6;
+}
+
+/* Мягкие неоновые линии разной формы */
+body::before, body::after, body::backdrop {
+  content: '';
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+}
+body::before {
+  top: -60px;
+  left: -80px;
+  width: 340px;
+  height: 100px;
+  background: linear-gradient(120deg, #0ff 40%, #f0f 100%);
+  filter: blur(38px) brightness(0.8);
+  border-radius: 80px 120px 60px 180px / 100px 60px 120px 80px;
+  opacity: 0.45;
+}
+body::after {
+  bottom: -60px;
+  right: -80px;
+  width: 340px;
+  height: 90px;
+  background: linear-gradient(70deg, #f0f 0%, #0ff 80%);
+  filter: blur(32px) brightness(0.7);
+  border-radius: 120px 60px 180px 80px / 80px 120px 60px 100px;
+  opacity: 0.38;
+}
+/* Дополнительная неоновая линия */
+body::backdrop {
+  top: 40vh;
+  left: 50vw;
+  width: 220px;
+  height: 40px;
+  background: linear-gradient(100deg, #0ff 0%, #f0f 100%);
+  filter: blur(24px) brightness(0.6);
+  border-radius: 100px 40px 80px 120px;
+  opacity: 0.22;
+}
+
+/* Глобально для ровности */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Адаптивность */
+@media (max-width: 900px) {
+  .container {
+    max-width: 98vw;
+    padding: 1.2rem 2vw;
+  }
+  h1 {
+    font-size: 1.3rem;
+  }
+  h2 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 0.7rem 0.2rem;
+    max-width: 100vw;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .category {
+    padding-left: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .product {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.3rem;
+    margin-bottom: 0.5rem;
+  }
+  .product label, .cash label {
+    font-size: 0.95rem;
+  }
+  input[type="number"] {
+    width: 100%;
+    min-width: 0;
+    font-size: 1rem;
+  }
+  button {
+    width: 100%;
+    min-width: 0;
+    font-size: 1rem;
+    padding: 0.7rem 0;
+  }
+  .buttons {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .container {
+    padding: 0.2rem 0;
+  }
+  h1, h2 {
+    font-size: 0.95rem;
+  }
+  .product label, .cash label {
+    font-size: 0.9rem;
+  }
+}

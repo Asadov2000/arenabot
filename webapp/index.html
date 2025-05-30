@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Учёт товаров</title>
+  <link rel="stylesheet" href="styles.css"> <!-- Стили -->
+</head>
+<body>
+  <div class="container">
+    <h1>Учёт товаров</h1>
+
+    <!-- Категории товаров -->
+    <div class="category">
+      <h2>Напитки</h2>
+      <div id="drinks"></div>
+    </div>
+
+    <div class="category">
+      <h2>Снеки</h2>
+      <div id="snacks"></div>
+    </div>
+
+    <!-- Касса -->
+    <div class="cash">
+      <label>Наличные в кассе: <input type="number" id="cash" min="0"></label>
+    </div>
+
+    <!-- Кнопки -->
+    <div class="buttons">
+      <button onclick="sendReport()">Отправить отчет</button>
+      <button onclick="loadLastReport()">Вставить предыдущие количества</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
