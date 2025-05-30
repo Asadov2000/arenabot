@@ -56,7 +56,7 @@ function sendReport() {
   // Генерация ссылки для отправки
   const telegramBotUsername = 'Arena_report_bot'; // ← Замените на имя вашего бота
   const encodedReport = encodeURIComponent(reportText);
-  window.open(`https://t.me/ ${telegramBotUsername}?text=${encodedReport}`, '_blank');
+  window.open(`https://t.me/${telegramBotUsername}?text=${encodedReport}`, '_blank');
 
   // Сохранение отчета в localStorage
   saveReportLocally();
