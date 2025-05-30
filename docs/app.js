@@ -1,5 +1,4 @@
 // Список товаров по категориям
-// ← Редактируйте здесь, чтобы изменить товары (добавляйте/удаляйте в списке)
 const products = {
   drinks: [
     "LitEnergy", "Адреналин", "Аскания", "Бёрн", "Вода", "Горилла",
@@ -34,34 +33,60 @@ function generateInputFields() {
 
 // Отправка отчета через Telegram Bot API
 function sendReport() {
-  const cash = document.getElementById('cash').value;
+  const cash = document.getElementById('cash').value || 0;
+
+  // Сбор данных
   let reportText = "📊 Отчёт:\n\n";
 
   // Сбор данных по напиткам
-  reportText += "🥤 Напитки:\n";
-  products.drinks.forEach(product => {
-    const value = document.getElementById(product).value || 0;
-    reportText += `• ${product}: ${value} шт\n`;
-  });
+  const drinkLines = products.drinks
+    .map(product => {
+      const value = document.getElementById(product).value || 0;
+      return value > 0 ? `• ${product}: ${value} шт` : null;
+    })
+    .filter(Boolean);
+
+  if (drinkLines.length > 0) {
+    reportText += "🥤 Напитки:\n" + drinkLines.join('\n') + '\n';
+  }
 
   // Сбор данных по снекам
-  reportText += "\n🍫 Снеки:\n";
-  products.snacks.forEach(product => {
-    const value = document.getElementById(product).value || 0;
-    reportText += `• ${product}: ${value} шт\n`;
-  });
+  const snackLines = products.snacks
+    .map(product => {
+      const value = document.getElementById(product).value || 0;
+      return value > 0 ? `• ${product}: ${value} шт` : null;
+    })
+    .filter(Boolean);
+
+  if (snackLines.length > 0) {
+    reportText += "\n🍫 Снеки:\n" + snackLines.join('\n') + '\n';
+  }
 
   // Касса
-  reportText += `\n💰 Касса: ${cash} руб`;
+  if (cash > 0) {
+    reportText += `\n💰 Касса: ${cash} руб`;
+  }
+
+  // Проверка, не пустой ли отчет
+  if (reportText.trim() === "📊 Отчёт:") {
+    alert("Ошибка: Нет данных для отправки. Заполните хотя бы одно поле.");
+    return;
+  }
 
   // Получение данных из Telegram WebApp
   const telegram = window.Telegram.WebApp;
-  const telegram_id = telegram.initDataUnsafe.user.id;
+  const telegram_id = telegram.initDataUnsafe?.user?.id;
 
-  // ← Замените на ваш токен бота (указан ниже)
-  const botToken = '7912173425:AAHBeNkE-SawhZ1PvBqrKuqblUNwBezj8zs'; // ← Ваш токен
+  // Проверка, доступен ли telegram_id
+  if (!telegram_id) {
+    alert("Ошибка: Не удалось получить ID пользователя. Откройте WebApp через Telegram.");
+    return;
+  }
 
-  // Формирование URL для Telegram Bot API
+  // Токен бота
+  const botToken = '7912173425:AAHBeNkE-SawhZ1PvBqrKuqblUNwBezj8zs';
+
+  // Формирование URL
   const encodedReport = encodeURIComponent(reportText);
   const telegramApiUrl = `https://api.telegram.org/bot ${botToken}/sendMessage?chat_id=${telegram_id}&text=${encodedReport}`;
 
@@ -69,39 +94,20 @@ function sendReport() {
   fetch(telegramApiUrl)
     .then(response => {
       if (response.ok) {
-        console.log('Отчет успешно отправлен');
+        console.log('Отчет отправлен');
+        alert('Отчет отправлен!');
       } else {
-        console.error('Ошибка отправки:', response.statusText);
+        return response.json().then(data => {
+          console.error('Telegram API ошибка:', data);
+          alert(`Ошибка: ${data.description}`);
+        });
       }
     })
     .catch(error => {
       console.error('Network error:', error);
+      alert('Ошибка сети. Проверьте интернет и попробуйте снова.');
     });
 
   // Сохранение отчета в localStorage
   saveReportLocally();
 }
-
-// Загрузка последнего отчета из localStorage
-function loadLastReport() {
-  const lastReport = localStorage.getItem('lastReport');
-  if (lastReport) {
-    const lines = JSON.parse(lastReport);
-    lines.forEach(([product, value]) => {
-      const input = document.getElementById(product);
-      if (input) input.value = value;
-    });
-  }
-}
-
-// Сохранение отчета в localStorage
-function saveReportLocally() {
-  const report = [];
-  [...document.querySelectorAll('input[type="number"]')].forEach(input => {
-    report.push([input.id, input.value]);
-  });
-  localStorage.setItem('lastReport', JSON.stringify(report));
-}
-
-// Инициализация
-generateInputFields();
