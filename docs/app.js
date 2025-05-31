@@ -83,16 +83,12 @@ function sendReport() {
     return;
   }
 
-  // Токен бота
-  const botToken = '7912173425:AAHBeNkE-SawhZ1PvBqrKuqblUNwBezj8zs';
+  // Токен бота ← Убедитесь, что он правильный
+  const botToken = '7912173425:AAHBeNkE-SawhZ1PvBqrKuqblUNwBezj8zs'; // ← Ваш токен
 
   // Формирование URL
   const encodedReport = encodeURIComponent(reportText);
   const telegramApiUrl = `https://api.telegram.org/bot ${botToken}/sendMessage?chat_id=${telegram_id}&text=${encodedReport}`;
-
-  // Логирование для проверки
-  console.log('Telegram ID:', telegram_id);
-  console.log('Сформированная ссылка:', telegramApiUrl);
 
   // Отправка отчета через Telegram Bot API
   fetch(telegramApiUrl)
