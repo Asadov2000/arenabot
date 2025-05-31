@@ -90,16 +90,24 @@ function sendReport() {
   const encodedReport = encodeURIComponent(reportText);
   const telegramApiUrl = `https://api.telegram.org/bot ${botToken}/sendMessage?chat_id=${telegram_id}&text=${encodedReport}`;
 
+  // Логирование для проверки
+  console.log('Telegram ID:', telegram_id);
+  console.log('Сформированная ссылка:', telegramApiUrl);
+
   // Отправка отчета через Telegram Bot API
   fetch(telegramApiUrl)
     .then(response => {
       if (response.ok) {
         console.log('Отчет отправлен');
-        alert('Отчет отправлен!');
+        alert('Отчет успешно отправлен!');
       } else {
         return response.json().then(data => {
           console.error('Telegram API ошибка:', data);
-          alert(`Ошибка: ${data.description}`);
+          if (data.description === "Not Found") {
+            alert("Ошибка: Бот не найден. Проверьте токен или ID пользователя.");
+          } else {
+            alert(`Ошибка: ${data.description}`);
+          }
         });
       }
     })
@@ -111,3 +119,27 @@ function sendReport() {
   // Сохранение отчета в localStorage
   saveReportLocally();
 }
+
+// Загрузка последнего отчета из localStorage
+function loadLastReport() {
+  const lastReport = localStorage.getItem('lastReport');
+  if (lastReport) {
+    const lines = JSON.parse(lastReport);
+    lines.forEach(([product, value]) => {
+      const input = document.getElementById(product);
+      if (input) input.value = value;
+    });
+  }
+}
+
+// Сохранение отчета в localStorage
+function saveReportLocally() {
+  const report = [];
+  [...document.querySelectorAll('input[type="number"]')].forEach(input => {
+    report.push([input.id, input.value]);
+  });
+  localStorage.setItem('lastReport', JSON.stringify(report));
+}
+
+// Инициализация
+generateInputFields();
