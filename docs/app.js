@@ -31,14 +31,14 @@ function generateInputFields() {
   });
 }
 
-// Отправка отчета через Telegram Bot API
+// Отправка отчета через сервер
 function sendReport() {
   const cash = document.getElementById('cash').value || 0;
 
   // Сбор данных
   let reportText = "📊 Отчёт:\n\n";
 
-  // Сбор данных по напиткам
+  // Напитки
   const drinkLines = products.drinks
     .map(product => {
       const value = document.getElementById(product).value || 0;
@@ -50,7 +50,7 @@ function sendReport() {
     reportText += "🥤 Напитки:\n" + drinkLines.join('\n') + '\n';
   }
 
-  // Сбор данных по снекам
+  // Снеки
   const snackLines = products.snacks
     .map(product => {
       const value = document.getElementById(product).value || 0;
@@ -77,33 +77,23 @@ function sendReport() {
   const telegram = window.Telegram.WebApp;
   const telegram_id = telegram.initDataUnsafe?.user?.id;
 
-  // Проверка, доступен ли telegram_id
   if (!telegram_id) {
     alert("Ошибка: Не удалось получить ID пользователя. Откройте WebApp через Telegram.");
     return;
   }
 
-  // Токен бота ← Убедитесь, что он правильный
-  const botToken = '7912173425:AAHBeNkE-SawhZ1PvBqrKuqblUNwBezj8zs'; // ← Ваш токен
-
-  // Формирование URL
-  const encodedReport = encodeURIComponent(reportText);
-  const telegramApiUrl = `https://api.telegram.org/bot ${botToken}/sendMessage?chat_id=${telegram_id}&text=${encodedReport}`;
-
-  // Отправка отчета через Telegram Bot API
-  fetch(telegramApiUrl)
+  // Отправка данных на сервер
+  fetch('https://inventory-report-server.onrender.com/send ', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ telegram_id, report_text: reportText })
+  })
     .then(response => {
       if (response.ok) {
-        console.log('Отчет отправлен');
         alert('Отчет успешно отправлен!');
       } else {
         return response.json().then(data => {
-          console.error('Telegram API ошибка:', data);
-          if (data.description === "Not Found") {
-            alert("Ошибка: Бот не найден. Проверьте токен или ID пользователя.");
-          } else {
-            alert(`Ошибка: ${data.description}`);
-          }
+          alert(`Ошибка: ${data.error}`);
         });
       }
     })
@@ -112,7 +102,7 @@ function sendReport() {
       alert('Ошибка сети. Проверьте интернет и попробуйте снова.');
     });
 
-  // Сохранение отчета в localStorage
+  // Сохранение в localStorage
   saveReportLocally();
 }
 
