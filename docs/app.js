@@ -1,13 +1,14 @@
-// Список товаров по категориям
+// Список товаров по категориям (добавьте все товары из интерфейса)
 const products = {
   drinks: [
+    // Напитки из вашего интерфейса
     "LitEnergy", "Адреналин", "Аскания", "Бёрн", "Вода", "Горилла",
     "Драйв", "Кола 0,3л", "Кола 1л", "Лаймон", "Липтон 0,5л", "Липтон 1л",
     "Морс", "Палпи", "РедБулл", "Сок 0,2л", "Сок 0,3л", "Спрайт", "Торнадо", "Фанта"
   ],
   snacks: [
-    "KitKat", "M&Ms", "Батон", "Баунти", "Марс", "Пикник", "Сендвич 200",
-    "Сендвич 300", "Сникерс", "Сухарики", "Твикс", "Тук крекер", "Чебупели"
+    // Снеки из вашего интерфейса
+    "Сникерс", "Сухарики", "Твикс", "Тук крекер", "Чебупели"
   ]
 };
 
@@ -31,7 +32,28 @@ function generateInputFields() {
   });
 }
 
-// Отправка отчета через сервер
+// Сохранение отчета в localStorage
+function saveReportLocally() {
+  const report = [];
+  [...document.querySelectorAll('input[type="number"]')].forEach(input => {
+    report.push([input.id, input.value]);
+  });
+  localStorage.setItem('lastReport', JSON.stringify(report));
+}
+
+// Загрузка последнего отчета из localStorage
+function loadLastReport() {
+  const lastReport = localStorage.getItem('lastReport');
+  if (lastReport) {
+    const lines = JSON.parse(lastReport);
+    lines.forEach(([product, value]) => {
+      const input = document.getElementById(product);
+      if (input) input.value = value;
+    });
+  }
+}
+
+// Отправка отчета
 function sendReport() {
   const cash = document.getElementById('cash').value || 0;
 
@@ -73,7 +95,7 @@ function sendReport() {
     return;
   }
 
-  // Получение данных из Telegram WebApp
+  // Получение Telegram ID
   const telegram = window.Telegram.WebApp;
   const telegram_id = telegram.initDataUnsafe?.user?.id;
 
@@ -83,17 +105,19 @@ function sendReport() {
   }
 
   // Отправка данных на сервер
-  fetch('https://inventory-report-server.onrender.com/send ', {
+  const SERVER_URL = 'https://inventory-report-server.onrender.com '; // ← Укажите ваш URL
+  fetch(`${SERVER_URL}/send`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ telegram_id, report_text: reportText })
   })
     .then(response => {
       if (response.ok) {
+        console.log('Отчет отправлен');
         alert('Отчет успешно отправлен!');
       } else {
         return response.json().then(data => {
-          alert(`Ошибка: ${data.error}`);
+          alert(`Ошибка: ${data.error || 'Неизвестная ошибка'}`);
         });
       }
     })
@@ -105,27 +129,3 @@ function sendReport() {
   // Сохранение в localStorage
   saveReportLocally();
 }
-
-// Загрузка последнего отчета из localStorage
-function loadLastReport() {
-  const lastReport = localStorage.getItem('lastReport');
-  if (lastReport) {
-    const lines = JSON.parse(lastReport);
-    lines.forEach(([product, value]) => {
-      const input = document.getElementById(product);
-      if (input) input.value = value;
-    });
-  }
-}
-
-// Сохранение отчета в localStorage
-function saveReportLocally() {
-  const report = [];
-  [...document.querySelectorAll('input[type="number"]')].forEach(input => {
-    report.push([input.id, input.value]);
-  });
-  localStorage.setItem('lastReport', JSON.stringify(report));
-}
-
-// Инициализация
-generateInputFields();
