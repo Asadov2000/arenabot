@@ -105,7 +105,7 @@ function sendReport() {
   }
 
   // Отправка данных на сервер
-  const SERVER_URL = 'https://inventory-report-server.onrender.com '; // ← Укажите ваш URL
+  const SERVER_URL = 'https://arenabot-kytp.onrender.com'; // ← Укажите ваш URL
   fetch(`${SERVER_URL}/send`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
